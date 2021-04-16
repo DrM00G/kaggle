@@ -34,7 +34,7 @@ def indicator_greater_than_zero(x):
 
 df['SibSp>0'] = df['SibSp'].apply(indicator_greater_than_zero)
 
-# Parch
+# parch
 df['Parch>0'] = df['Parch'].apply(indicator_greater_than_zero)
 
 # cabinType
@@ -47,25 +47,14 @@ def get_cabin_type(cabin):
     else:
         return cabin
 
-df['CabinType'] = df['Cabin'].apply(get_cabin_type)
 
-for cabin_type in df['CabinType'].unique():
-    dummy_variable_name = 'CabinType={}'.format(cabin_type)
-    dummy_variable_values = df['CabinType'].apply(lambda entry: int(entry==cabin_type))
-    df[dummy_variable_name] = dummy_variable_values
+del df['Cabin']
+del df["Embarked"]
 
-del df['CabinType']
+# print(df.columns)
 
-# embarked
+#split into training/testiing data
+train_df = df[:500]
+test_df = df[:500]
 
-df['Embarked'] = df['Embarked'].fillna('None')
-
-for cabin_type in df['Embarked'].unique():
-    dummy_variable_name = 'Embarked={}'.format(cabin_type)
-    dummy_variable_values = df['Embarked'].apply(lambda entry: int(entry==cabin_type))
-    df[dummy_variable_name] = dummy_variable_values
-
-del df['Embarked']
-
-
-print(df)
+# print(df)

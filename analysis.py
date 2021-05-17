@@ -1,5 +1,5 @@
-import pandas as pd 
 import numpy as np
+import pandas as pd 
 from sklearn.linear_model import LinearRegression, LogisticRegression
 
 df = pd.read_csv('/home/runner/kaggle/dataset.csv')
@@ -76,9 +76,11 @@ del df['Embarked']
 
 #print(df['CabinType'])
 
+#'Sex', 'Pclass', 'Fare', 'Age', 'SibSp', 'SibSp>0', 'Parch>0', 'Embarked=C', 'Embarked=None', 'Embarked=Q', 'Embarked=S', 'CabinType=A', 'CabinType=B', 'CabinType=C', 'CabinType=D', 'CabinType=E', 'CabinType=F', 'CabinType=G', 'CabinType=None', 'CabinType=T'
 
-features_to_use = ['Sex', 'Pclass', 'Fare', 'Age', 'SibSp', 'SibSp>0', 'Parch>0', 'Embarked=C', 'Embarked=None', 'Embarked=Q', 'Embarked=S', 'CabinType=A', 'CabinType=B', 'CabinType=C', 'CabinType=D', 'CabinType=E', 'CabinType=F', 'CabinType=G', 'CabinType=None', 'CabinType=T']
-
+features_to_use = ['Sex']
+columns_needed = ['Survived']+ features_to_use
+df=df[columns_needed]
 #print(df.columns)
 
 # split into training/testing dataframes
@@ -86,8 +88,8 @@ num_train = 500
 df_train = df[:num_train]
 df_test = df[num_train:]
 
-arr_train = np.array(df_train[df_train])
-arr_test = np.array(df_test[df_test])
+arr_train = np.array(df_train)
+arr_test = np.array(df_test)
 
 y_train = arr_train[:,0]
 y_test = arr_test[:,0]
@@ -100,38 +102,41 @@ regressor.fit(X_train, y_train)
 
 coef_dict = {}
 feature_columns = df_train.columns[1:]
-feature_coefficients = regressor.coef_[0]
-#print('feature_coefficients', feature_coefficients)
-#print(feature_coefficients)
+feature_coefficients = regressor.coef_
+print('feature_coefficients', feature_coefficients)
 for i in range(len(feature_columns)):
         column = feature_columns[i]
         coefficient = feature_coefficients[i]
         coef_dict[column] = coefficient
 
 y_test_predictions = regressor.predict(X_test)
-print(y_test_predictions)
-# y_train_predictions = regressor.predict(X_train)
+# print("y_test_predictions"+str(y_test_predictions))
+y_train_predictions = regressor.predict(X_train)
 
-# def convert_regressor_output_to_survival_value(output):
-#     if output < 0.5:
-#         return 0
-#     else:
-#         return 1
+def convert_regressor_output_to_survival_value(output):
+    if output < 0.5:
+        return 0
+    else:
+        return 1
 
-# y_test_predictions = [convert_regressor_output_to_survival_value(output) for output in y_test_predictions]
-# y_train_predictions = [convert_regressor_output_to_survival_value(output) for output in y_train_predictions]
+y_test_predictions = [convert_regressor_output_to_survival_value(output) for output in y_test_predictions]
+y_train_predictions = [convert_regressor_output_to_survival_value(output) for output in y_train_predictions]
 
-# def get_accuracy(predictions, actual):
-#     num_correct = 0
-#     num_incorrect = 0
-#     for i in range(len(predictions)):
-#         if predictions[i] == actual[i]:
-#             num_correct += 1
-#         else:
-#             num_incorrect += 1
+def get_accuracy(predictions, actual):
+    num_correct = 0
+    num_incorrect = 0
+    for i in range(len(predictions)):
+        if predictions[i] == actual[i]:
+            num_correct += 1
+        else:
+            num_incorrect += 1
     
-#     return num_correct / (num_correct + num_incorrect)
+    return num_correct / (num_correct + num_incorrect)
 
-# training_accuracy = get_accuracy(y_train_predictions, y_train)
-# testing_accuracy = get_accuracy(y_test_predictions, y_test)
+print('\n')
+training_accuracy = get_accuracy(y_train_predictions, y_train)
+testing_accuracy = get_accuracy(y_test_predictions, y_test)
+print("features_to_use",features_to_use)
 
+print("training_accuracy",training_accuracy)
+print("testing_accuracy",testing_accuracy)

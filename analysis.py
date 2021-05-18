@@ -78,7 +78,7 @@ del df['Embarked']
 
 #'Sex', 'Pclass', 'Fare', 'Age', 'SibSp', 'SibSp>0', 'Parch>0', 'Embarked=C', 'Embarked=None', 'Embarked=Q', 'Embarked=S', 'CabinType=A', 'CabinType=B', 'CabinType=C', 'CabinType=D', 'CabinType=E', 'CabinType=F', 'CabinType=G', 'CabinType=None', 'CabinType=T'
 
-features_to_use = ['Sex']
+features_to_use = ['Sex', 'Pclass', 'Fare', 'Age', 'SibSp', 'SibSp>0', 'Parch>0', 'Embarked=C', 'Embarked=None', 'Embarked=Q', 'Embarked=S', 'CabinType=A', 'CabinType=B', 'CabinType=C', 'CabinType=D', 'CabinType=E', 'CabinType=F', 'CabinType=G', 'CabinType=None', 'CabinType=T']
 columns_needed = ['Survived']+ features_to_use
 df=df[columns_needed]
 #print(df.columns)
@@ -103,11 +103,12 @@ regressor.fit(X_train, y_train)
 coef_dict = {}
 feature_columns = df_train.columns[1:]
 feature_coefficients = regressor.coef_
-print('feature_coefficients', feature_coefficients)
 for i in range(len(feature_columns)):
         column = feature_columns[i]
         coefficient = feature_coefficients[i]
         coef_dict[column] = coefficient
+print('feature_coefficients')
+print(coef_dict)
 
 y_test_predictions = regressor.predict(X_test)
 # print("y_test_predictions"+str(y_test_predictions))

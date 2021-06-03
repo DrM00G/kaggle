@@ -77,67 +77,72 @@ del df['Embarked']
 #print(df['CabinType'])
 
 #'Sex', 'Pclass', 'Fare', 'Age', 'SibSp', 'SibSp>0', 'Parch>0', 'Embarked=C', 'Embarked=None', 'Embarked=Q', 'Embarked=S', 'CabinType=A', 'CabinType=B', 'CabinType=C', 'CabinType=D', 'CabinType=E', 'CabinType=F', 'CabinType=G', 'CabinType=None', 'CabinType=T'
-
+ratings = df['Survived']
 features_to_use = ['Sex', 'Pclass', 'Fare', 'Age', 'SibSp', 'SibSp>0', 'Parch>0', 'Embarked=C', 'Embarked=None', 'Embarked=Q', 'Embarked=S', 'CabinType=A', 'CabinType=B', 'CabinType=C', 'CabinType=D', 'CabinType=E', 'CabinType=F', 'CabinType=G', 'CabinType=None', 'CabinType=T']
-columns_needed = ['Survived']+ features_to_use
+columns_needed = features_to_use
 df=df[columns_needed]
 #print(df.columns)
 
 # split into training/testing dataframes
 num_train = 500
-df_train = df[:num_train]
-df_test = df[num_train:]
 
-arr_train = np.array(df_train)
-arr_test = np.array(df_test)
+y_train = np.array(ratings[:500])
+y_test = np.array(ratings[501:])
 
-y_train = arr_train[:,0]
-y_test = arr_test[:,0]
+X_train = np.array(df[:500])
+X_test = np.array(df[501:])
 
-X_train = arr_train[:,1:]
-X_test = arr_test[:,1:]
-
-regressor = LinearRegression()
+regressor = LogisticRegression(max_iter=300)
 regressor.fit(X_train, y_train)
 
-coef_dict = {}
-feature_columns = df_train.columns[1:]
-feature_coefficients = regressor.coef_
-for i in range(len(feature_columns)):
-        column = feature_columns[i]
-        coefficient = feature_coefficients[i]
-        coef_dict[column] = coefficient
-print('feature_coefficients')
-print(coef_dict)
+print("Constant", regressor.intercept_[0])
 
-y_test_predictions = regressor.predict(X_test)
-# print("y_test_predictions"+str(y_test_predictions))
-y_train_predictions = regressor.predict(X_train)
+final_results = {column: coefficient for column, coefficient in zip(df[:500].columns, *regressor.coef_)}
+for col,value in final_results.items():
+    print(col,value)
+print("\n")
 
-def convert_regressor_output_to_survival_value(output):
-    if output < 0.5:
-        return 0
-    else:
-        return 1
+print("training:", regressor.score(X_train, y_train))
+print("testing:", regressor.score(X_test, y_test))
 
-y_test_predictions = [convert_regressor_output_to_survival_value(output) for output in y_test_predictions]
-y_train_predictions = [convert_regressor_output_to_survival_value(output) for output in y_train_predictions]
+# coef_dict = {}
+# feature_columns = features_to_use
+# feature_coefficients = regressor.coef_
+# for i in range(len(feature_columns)):
+#         column = feature_columns[i]
+#         coefficient = feature_coefficients[i]
+#         coef_dict[column] = coefficient
+# print('feature_coefficients')
+# print(coef_dict)
 
-def get_accuracy(predictions, actual):
-    num_correct = 0
-    num_incorrect = 0
-    for i in range(len(predictions)):
-        if predictions[i] == actual[i]:
-            num_correct += 1
-        else:
-            num_incorrect += 1
+# y_test_predictions = regressor.predict(X_test)
+# # print("y_test_predictions"+str(y_test_predictions))
+# y_train_predictions = regressor.predict(X_train)
+
+# def convert_regressor_output_to_survival_value(output):
+#     if output < 0.5:
+#         return 0
+#     else:
+#         return 1
+
+# y_test_predictions = [convert_regressor_output_to_survival_value(output) for output in y_test_predictions]
+# y_train_predictions = [convert_regressor_output_to_survival_value(output) for output in y_train_predictions]
+
+# def get_accuracy(predictions, actual):
+#     num_correct = 0
+#     num_incorrect = 0
+#     for i in range(len(predictions)):
+#         if predictions[i] == actual[i]:
+#             num_correct += 1
+#         else:
+#             num_incorrect += 1
     
-    return num_correct / (num_correct + num_incorrect)
+#     return num_correct / (num_correct + num_incorrect)
 
-print('\n')
-training_accuracy = get_accuracy(y_train_predictions, y_train)
-testing_accuracy = get_accuracy(y_test_predictions, y_test)
-print("features_to_use",features_to_use)
+# print('\n')
+# training_accuracy = get_accuracy(y_train_predictions, y_train)
+# testing_accuracy = get_accuracy(y_test_predictions, y_test)
+# print("features_to_use",features_to_use)
 
-print("training_accuracy",training_accuracy)
-print("testing_accuracy",testing_accuracy)
+# print("training_accuracy",training_accuracy)
+# print("testing_accuracy",testing_accuracy)

@@ -2,12 +2,12 @@
 name = "kaggle"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["DrMoo <<>>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-numpy = "^1.20.2"
 pandas = "^1.2.4"
+numpy = "^1.20.3"
 sklearn = "^0.0"
 
 [tool.poetry.dev-dependencies]

@@ -87,23 +87,30 @@ df=df[columns_needed]
 num_train = 500
 
 y_train = np.array(ratings[:500])
-y_test = np.array(ratings[501:])
+y_test = np.array(ratings[500:])
 
 X_train = np.array(df[:500])
-X_test = np.array(df[501:])
+X_test = np.array(df[500:])
 
-regressor = LogisticRegression(max_iter=300)
+regressor = LogisticRegression(max_iter=10000)
 regressor.fit(X_train, y_train)
+cols = ['Constant']+[x for x in df.columns if x != 'Survived']
+coefs = [regressor.intercept_[0]]+[x for x in regressor.coef_[0]]
 
-print("Constant", regressor.intercept_[0])
+for data in [(X_train,y_train),(X_test,y_test)]:
+    predictions = regressor.predict(data[0])
 
-final_results = {column: coefficient for column, coefficient in zip(df[:500].columns, *regressor.coef_)}
-for col,value in final_results.items():
-    print(col,value)
-print("\n")
+    result = [0,0]
+    for i in range(len(predictions)):
+        output = 1 if predictions[i]>0.5 else 0
+        result[1]+=1
+        if output == data[1][i]:
+            result[0]+=1
 
-print("training:", regressor.score(X_train, y_train))
-print("testing:", regressor.score(X_test, y_test))
+    print("\t"+str(result[0]/result[1]))
+
+print(len(cols),len(coefs))
+print("\n\tcoefficients: "+str({cols[i]:round(coefs[i],4) for i in range(len(cols))})+"\n")
 
 # coef_dict = {}
 # feature_columns = features_to_use

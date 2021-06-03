@@ -83,6 +83,25 @@ columns_needed = features_to_use
 df=df[columns_needed]
 #print(df.columns)
 
+interaction_terms=[]
+for feat_1 in features_to_use:
+    for feat_2 in features_to_use:
+        if 'Embarked=' in feat_1 and 'Embarked=' in feat_2:
+            continue
+        else:
+            if 'CabinType=' in feat_1 and 'CabinType=' in feat_2:
+                continue
+            else:
+                if 'SibSp' in feat_1 and 'SibSp' in feat_2:
+                    continue
+                else:
+                    if feat_1 != feat_2:
+                        if feat_2 + ' * ' + feat_1 not in interaction_terms:
+                            interaction_terms.append(feat_1 + ' * ' + feat_2)
+                            df[feat_1 + ' * ' + feat_2] = np.array([df[feat_1][i]*df[feat_2][i] for i in range(len(df[feat_1]))])
+
+# print("INTERACTIONS: "+str(interaction_terms))
+
 # split into training/testing dataframes
 num_train = 500
 

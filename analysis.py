@@ -111,7 +111,7 @@ y_test = np.array(ratings[500:])
 X_train = np.array(df[:500])
 X_test = np.array(df[500:])
 
-regressor = LogisticRegression(max_iter=10000)
+regressor = LogisticRegression(max_iter=1000)
 regressor.fit(X_train, y_train)
 cols = ['Constant']+[x for x in df.columns if x != 'Survived']
 coefs = [regressor.intercept_[0]]+[x for x in regressor.coef_[0]]
@@ -128,8 +128,8 @@ for data in [(X_train,y_train),(X_test,y_test)]:
 
     print("\t"+str(result[0]/result[1]))
 
-print(len(cols),len(coefs))
-print("\n\tcoefficients: "+str({cols[i]:round(coefs[i],4) for i in range(len(cols))})+"\n")
+# print(len(cols),len(coefs))
+# print("\n\tcoefficients: "+str({cols[i]:round(coefs[i],4) for i in range(len(cols))})+"\n")
 
 # coef_dict = {}
 # feature_columns = features_to_use

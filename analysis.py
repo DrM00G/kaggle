@@ -4,8 +4,8 @@ from sklearn.linear_model import LinearRegression, LogisticRegression
 
 df = pd.read_csv('/home/runner/kaggle/dataset.csv')
 
-keep_cols = ['Survived', 'Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Cabin', 'Embarked']
-df = df[keep_cols]
+# keep_cols = ['Survived', 'Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Cabin', 'Embarked']
+# df = df[keep_cols]
 
 # process the columns
 

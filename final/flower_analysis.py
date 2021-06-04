@@ -21,17 +21,17 @@ species=['Iris-setosa','Iris-versicolor','Iris-virginica']
 #     print(sum(species_df['PetalLengthCm'])/len(species_df['PetalWidthCm']))
 #     print("\n")
 features_to_use=['Species','SepalLengthCm', 'SepalWidthCm', 'PetalLengthCm', 'PetalWidthCm']
-used_df = df[features_to_use].copy()
-for col in used_df.columns:
+minmax = df[features_to_use].copy()
+for col in minmax.columns:
     if col != 'Species':
-        used_df[col] = (used_df[col]-used_df[col].min())/(used_df[col].max() - used_df[col].min())
+        minmax[col] = (minmax[col]-minmax[col].min())/(minmax[col].max() - minmax[col].min())
 
-used_df = used_df.sample(frac=1).reset_index(drop=True)
+minmax = minmax.sample(frac=1).reset_index(drop=True)
 
 sample_size=len(np.array(df))//2
 
-df_train = used_df[:sample_size]
-df_test = used_df[sample_size:]
+df_train = minmax[:sample_size]
+df_test = minmax[sample_size:]
 
 train_y = np.array([y for y in np.array(df_train)[:,0]])
 train_x = np.array([[y for y in x] for x in np.array(df_train)[:,1:]])
